@@ -28,14 +28,14 @@ public class IndexController {
     }
 
     @GetMapping(value = "/admincon")
-    @PreAuthorize(value = "hasRole('admin')")
+    @PreAuthorize(value = "hasAuthority('ROLE_ADMIN')")
     public String admincon(Model model) {
         model.addAttribute("key1","我的Java世界Security!!!");
         return "index2";
     }
 
     @GetMapping(value = "/usercon")
-    @PreAuthorize(value = "hasRole('user')")
+    @PreAuthorize(value = "hasAuthority('ROLE_USER')")
     public String usercon(Model model) {
         model.addAttribute("key2", "普通");
         return "index3";

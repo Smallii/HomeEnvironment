@@ -3,6 +3,7 @@ package com.home.HomeEnvironment.web;
 import com.home.HomeEnvironment.entity.SysUser;
 import com.home.HomeEnvironment.service.SysUserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -22,7 +23,13 @@ public class SysUserController {
     }
 
     @GetMapping(value = "getUserAll")
+    @PreAuthorize(value = "hasAuthority('ROLE_ADMIN')")
     public List<SysUser> UserAll(){
+        return sysUserService.findAll();
+    }
+
+    @GetMapping(value = "getUserAllpub")
+    public List<SysUser> UserAllpub(){
         return sysUserService.findAll();
     }
 

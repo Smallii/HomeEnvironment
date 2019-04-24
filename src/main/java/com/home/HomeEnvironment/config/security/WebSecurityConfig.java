@@ -1,6 +1,11 @@
 package com.home.HomeEnvironment.config.security;
 
+import com.home.HomeEnvironment.config.abnormal.JWTAuthenticationEntryPoint;
+import com.home.HomeEnvironment.config.abnormal.MyLogoutHandler;
+import com.home.HomeEnvironment.config.filter.JWTAuthorizationFilter;
+import com.home.HomeEnvironment.config.filter.JWTAuthenticationFilter;
 import com.home.HomeEnvironment.service.CustomUserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -9,6 +14,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -22,11 +28,18 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
+    @Autowired
+    private MyAuthenticationProvider provider;// 自定义的AuthenticationProvider
+
     @Bean
     UserDetailsService customUserService() {
-        return new CustomUserService();
+        return new CustomUserService()  ;
     }
 
+    /**
+     * 对密码进行加密
+     * @return
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         // return PasswordEncoderFactories.createDelegatingPasswordEncoder();
@@ -36,6 +49,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth
+                .authenticationProvider(provider)
                 .userDetailsService(customUserService())
                 .passwordEncoder(passwordEncoder());
     }
@@ -63,15 +77,22 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .loginPage("/login")
                 .failureUrl("/login?error")//自定义登录页
                 .permitAll()
-//              .defaultSuccessUrl("/",true)//登录成功后跳转页
-//              .permitAll()
+//                .defaultSuccessUrl("/",true)//登录成功后跳转页
+//                .permitAll()
                 .and()
                 .logout()
+                .addLogoutHandler(new MyLogoutHandler())
                 .permitAll();
 //        关闭csrf
         http
                 .csrf()
-                .disable();
+                .disable()
+                .addFilter(new JWTAuthenticationFilter(authenticationManager()))
+                .addFilter(new JWTAuthorizationFilter(authenticationManager()))
+                //不需要Session
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .exceptionHandling().authenticationEntryPoint(new JWTAuthenticationEntryPoint());
     }
 
 }
