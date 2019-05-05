@@ -1,7 +1,10 @@
 package com.home.HomeEnvironment.web;
 
+import com.alibaba.fastjson.JSON;
 import com.home.HomeEnvironment.entity.SysUser;
 import com.home.HomeEnvironment.service.SysUserService;
+import com.home.HomeEnvironment.util.JsonResult;
+import com.home.HomeEnvironment.util.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -16,10 +19,12 @@ public class SysUserController {
     @Autowired
     SysUserService sysUserService;
 
-    @PostMapping(value = "/regin")
-    public String regin(SysUser sysUser) {
-        sysUserService.regin(sysUser);
-        return "注册成功！";
+    @PostMapping(value = "/register")
+    public JsonResult regin(SysUser sysUser) {
+        sysUserService.register(sysUser);
+        JsonResult jsonResult = new JsonResult();
+        jsonResult.setMsg("注册成功");
+        return jsonResult;
     }
 
     @GetMapping(value = "getUserAll")

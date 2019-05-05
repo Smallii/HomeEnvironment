@@ -1,8 +1,11 @@
 package com.home.HomeEnvironment.config.filter;
 
+import com.alibaba.fastjson.JSON;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.home.HomeEnvironment.entity.SysUser;
 import com.home.HomeEnvironment.util.JwtTokenUtils;
+import com.home.HomeEnvironment.util.Response;
+import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -82,19 +85,27 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                                             HttpServletResponse response,
                                             FilterChain chain,
                                             Authentication auth) {
-        //获取登录成功的用户信息
-        SysUser sysUser = (SysUser) auth.getPrincipal();
-        System.err.println("登录成功，登录用户的信息是：" + sysUser.toString());
-        //返回创建成功的token，但是这里创建的token只是单纯的token，按照jwt的规定，最后请求的格式应该是 `Bearer token`
-        String role = "";
-        Collection<? extends GrantedAuthority> authorities = sysUser.getAuthorities();
-        for (GrantedAuthority authority : authorities){
-            role = authority.getAuthority();
+        try {
+            //获取登录成功的用户信息
+            SysUser sysUser = (SysUser) auth.getPrincipal();
+            System.err.println("登录成功，登录用户的信息是：" + sysUser.toString());
+            //返回创建成功的token，但是这里创建的token只是单纯的token，按照jwt的规定，最后请求的格式应该是 `Bearer token`
+            String role = "";
+            Collection<? extends GrantedAuthority> authorities = sysUser.getAuthorities();
+            for (GrantedAuthority authority : authorities){
+                role = authority.getAuthority();
+            }
+    //        Claims claims = Jwts.claims();
+    //        claims.put("role", auth.getAuthorities().stream().map(s -> s.getAuthority()).collect(Collectors.toList()));
+            String token = JwtTokenUtils.createToken(sysUser.getUsername(), role, false);
+            response.setCharacterEncoding("UTF-8");
+            response.setContentType("application/json; charset=utf-8");
+            response.setHeader("Authorization", JwtTokenUtils.TOKEN_PREFIX + token);
+
+            response.getWriter().write(JSON.toJSONString(new Response.Builder().setStatus(800).setMessage("登录成功").build()));
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-//        Claims claims = Jwts.claims();
-//        claims.put("role", auth.getAuthorities().stream().map(s -> s.getAuthority()).collect(Collectors.toList()));
-        String token = JwtTokenUtils.createToken(sysUser.getUsername(), role, false);
-        response.setHeader("token", JwtTokenUtils.TOKEN_PREFIX + token);
 //        Claims claims = Jwts.claims();
 //        claims.put("role", auth.getAuthorities().stream().map(s -> s.getAuthority()).collect(Collectors.toList()));
 //        String token = Jwts.builder()
@@ -128,11 +139,17 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     protected void unsuccessfulAuthentication(HttpServletRequest httpServletrequest,
                                               HttpServletResponse httpServletResponse,
                                               AuthenticationException e) throws IOException, ServletException {
+        String username = httpServletrequest.getParameter("username");
+        String password = httpServletrequest.getParameter("password");
         httpServletResponse.setCharacterEncoding("UTF-8");
         httpServletResponse.setContentType("application/json; charset=utf-8");
-        httpServletResponse.setStatus(httpServletResponse.SC_FORBIDDEN);
-        String reason = "身份验证失败，用户名或密码错误："+ e.getMessage();
-        httpServletResponse.getWriter().write(new ObjectMapper().writeValueAsString(reason));
+        if (null == username || "".equals(username) || "undefined".equals(username)) {
+            httpServletResponse.getWriter().write(JSON.toJSONString(new Response.Builder().setStatus(801).setMessage("请输入用户名").build()));
+        } else if (null == password || "".equals(password) || "undefined".equals(password)) {
+            httpServletResponse.getWriter().write(JSON.toJSONString(new Response.Builder().setStatus(802).setMessage("请输入密码").build()));
+        } else {
+            httpServletResponse.getWriter().write(JSON.toJSONString(new Response.Builder().setStatus(httpServletResponse.SC_FORBIDDEN).setMessage("用户名或密码错误").build()));
+        }
     }
 
 }

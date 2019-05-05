@@ -18,5 +18,5 @@ public interface SysUserService {
      */
     List<SysUser> findAll();
 
-    void regin(SysUser sysUser);
+    void register(SysUser sysUser);
 }

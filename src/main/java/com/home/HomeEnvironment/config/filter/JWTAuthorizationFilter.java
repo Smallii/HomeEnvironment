@@ -54,11 +54,11 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 //        }
         //如果请求头中没有Authorization信息则直接放行了
         if (tokenHeader == null) {
-            httpServletResponse.getWriter().write(JSON.toJSONString(new Response.Builder().setStatus(403).setMessage("未检测到token").build()));
-            return;
-
-//            chain.doFilter(httpServletRequest, httpServletResponse);
+//            httpServletResponse.getWriter().write(JSON.toJSONString(new Response.Builder().setStatus(403).setMessage("未检测到token").build()));
 //            return;
+
+            chain.doFilter(httpServletRequest, httpServletResponse);
+            return;
 
 
 
