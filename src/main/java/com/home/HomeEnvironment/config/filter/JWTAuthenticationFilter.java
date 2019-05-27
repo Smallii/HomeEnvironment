@@ -1,6 +1,7 @@
 package com.home.HomeEnvironment.config.filter;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.home.HomeEnvironment.entity.SysUser;
 import com.home.HomeEnvironment.util.JwtTokenUtils;
@@ -88,7 +89,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         try {
             //获取登录成功的用户信息
             SysUser sysUser = (SysUser) auth.getPrincipal();
-            System.err.println("登录成功，登录用户的信息是：" + sysUser.toString());
+            System.err.println("登录成功，登录用户id：" + sysUser.getId());
             //返回创建成功的token，但是这里创建的token只是单纯的token，按照jwt的规定，最后请求的格式应该是 `Bearer token`
             String role = "";
             Collection<? extends GrantedAuthority> authorities = sysUser.getAuthorities();
@@ -101,8 +102,12 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             response.setCharacterEncoding("UTF-8");
             response.setContentType("application/json; charset=utf-8");
             response.setHeader("Authorization", JwtTokenUtils.TOKEN_PREFIX + token);
-
-            response.getWriter().write(JSON.toJSONString(new Response.Builder().setStatus(800).setMessage("登录成功").build()));
+            /**
+             * 登录成功后把用户手机号和用户名返回给前台
+             */
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("username", sysUser.getUsername());
+            response.getWriter().write(JSON.toJSONString(new Response.Builder().setStatus(800).setMessage("登录成功").setData(jsonObject).build()));
         } catch (IOException e) {
             e.printStackTrace();
         }

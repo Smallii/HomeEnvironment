@@ -1,8 +1,9 @@
-package com.home.HomeEnvironment.service.impl;
+package com.home.HomeEnvironment.service.impl.Sysuser;
 
-import com.home.HomeEnvironment.dao.SysUserRepository;
+import com.home.HomeEnvironment.dao.Sysuser.SysUserRepository;
 import com.home.HomeEnvironment.entity.SysUser;
-import com.home.HomeEnvironment.service.SysUserService;
+import com.home.HomeEnvironment.service.Sysuser.SysUserService;
+import com.home.HomeEnvironment.util.SnowFlake;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -32,6 +33,7 @@ public class SysUserServiceImpl implements SysUserService {
 
     @Override
     public void register(SysUser sysUser) {
+        sysUser.setId(SnowFlake.nextId());
         sysUser.setPassword(passwordEncoder.encode(sysUser.getPassword()));
         sysUserRepository.save(sysUser);
     }

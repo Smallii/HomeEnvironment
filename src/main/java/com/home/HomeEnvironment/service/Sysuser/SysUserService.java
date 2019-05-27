@@ -1,4 +1,4 @@
-package com.home.HomeEnvironment.service;
+package com.home.HomeEnvironment.service.Sysuser;
 
 import com.home.HomeEnvironment.entity.SysUser;
 

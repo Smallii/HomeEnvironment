@@ -1,7 +1,6 @@
 package com.home.HomeEnvironment.config.security;
 
 import com.home.HomeEnvironment.config.abnormal.JWTAuthenticationEntryPoint;
-import com.home.HomeEnvironment.config.abnormal.MyLogoutHandler;
 import com.home.HomeEnvironment.config.filter.JWTAuthorizationFilter;
 import com.home.HomeEnvironment.config.filter.JWTAuthenticationFilter;
 import com.home.HomeEnvironment.service.CustomUserService;

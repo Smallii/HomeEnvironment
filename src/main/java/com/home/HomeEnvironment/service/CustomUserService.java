@@ -1,6 +1,6 @@
 package com.home.HomeEnvironment.service;
 
-import com.home.HomeEnvironment.dao.SysUserRepository;
+import com.home.HomeEnvironment.dao.Sysuser.SysUserRepository;
 import com.home.HomeEnvironment.entity.SysUser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
