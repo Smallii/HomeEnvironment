@@ -4,6 +4,7 @@ import com.home.HomeEnvironment.entity.Waybill;
 import com.home.HomeEnvironment.service.Waybill.WaybillService;
 import com.home.HomeEnvironment.util.JsonResult;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,6 +28,22 @@ public class WaybillController {
     JsonResult findAllByWaybillStateAndUserId(Waybill waybill){
         JsonResult result = new JsonResult();
         List<Waybill> waybillList = waybillService.findAllByWaybillStateAndUserId(waybill);
+        result.setCode("200");
+        result.setData(waybillList);
+        return result;
+    }
+
+    /**
+     * 根据用户id查询订单结果集，有订单状态则按照订单状态查询，没有则查询全部订单，并且按下单时间和id排序
+     * @param waybill
+     * @param currentPage
+     * @param pageSize
+     * @return
+     */
+    @GetMapping(value = "findAll")
+    JsonResult findAll(Waybill waybill, Integer currentPage, Integer pageSize){
+        JsonResult result = new JsonResult();
+        Page<Waybill> waybillList = waybillService.findAll(waybill, currentPage, pageSize);
         result.setCode("200");
         result.setData(waybillList);
         return result;

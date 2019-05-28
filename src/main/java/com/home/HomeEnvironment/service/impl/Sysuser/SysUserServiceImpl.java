@@ -33,7 +33,6 @@ public class SysUserServiceImpl implements SysUserService {
 
     @Override
     public void register(SysUser sysUser) {
-        sysUser.setId(SnowFlake.nextId());
         sysUser.setPassword(passwordEncoder.encode(sysUser.getPassword()));
         sysUserRepository.save(sysUser);
     }

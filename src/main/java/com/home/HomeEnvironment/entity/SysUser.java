@@ -15,6 +15,7 @@ import java.util.*;
 public class SysUser implements UserDetails {
     @Id
     @Column(name = "id")
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private long id;
     @Column(name = "username")
     private String username;

@@ -16,6 +16,7 @@ public class UserDetail {
 
     @Id
     @Column(name = "user_detail_id", nullable = false)
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     public long getUserDetailId() {
         return userDetailId;
     }

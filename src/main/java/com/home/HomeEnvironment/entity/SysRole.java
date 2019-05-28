@@ -17,6 +17,7 @@ public class SysRole implements Serializable {
 
     @Id
     @Column(name = "id")
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     public long getId() {
         return id;
     }

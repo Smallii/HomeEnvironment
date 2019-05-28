@@ -1,9 +1,6 @@
 package com.home.HomeEnvironment.entity;
 
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Objects;
 
 /**
@@ -18,6 +15,7 @@ public class Integral {
 
     @Id
     @Column(name = "integral_id", nullable = false)
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     public long getIntegralId() {
         return integralId;
     }

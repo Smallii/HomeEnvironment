@@ -18,6 +18,7 @@ public class IntegralRecord {
 
     @Id
     @Column(name = "integral_record_id", nullable = false)
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     public long getIntegralRecordId() {
         return integralRecordId;
     }

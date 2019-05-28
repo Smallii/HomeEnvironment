@@ -1,9 +1,6 @@
 package com.home.HomeEnvironment.entity;
 
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.Objects;
@@ -32,6 +29,7 @@ public class Waybill {
 
     @Id
     @Column(name = "waybill_id", nullable = false)
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     public long getWaybillId() {
         return waybillId;
     }
@@ -81,7 +79,7 @@ public class Waybill {
     }
 
     @Basic
-    @Column(name = "creation_time", nullable = false)
+    @Column(name = "creation_time")
     public Date getCreationTime() {
         return creationTime;
     }

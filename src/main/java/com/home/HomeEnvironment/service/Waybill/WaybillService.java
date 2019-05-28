@@ -1,6 +1,9 @@
 package com.home.HomeEnvironment.service.Waybill;
 
 import com.home.HomeEnvironment.entity.Waybill;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 
 import java.util.List;
 
@@ -15,6 +18,8 @@ public interface WaybillService {
      * @return
      */
     List<Waybill> findAllByWaybillStateAndUserId(Waybill waybill);
+
+    Page<Waybill> findAll(Waybill waybill, Integer currentPage, Integer pageSize);
 
     /**
      * 添加运单

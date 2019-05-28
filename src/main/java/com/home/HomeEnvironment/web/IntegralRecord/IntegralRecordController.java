@@ -4,6 +4,7 @@ import com.home.HomeEnvironment.entity.IntegralRecord;
 import com.home.HomeEnvironment.service.IntegralRecord.IntegralRecordService;
 import com.home.HomeEnvironment.util.JsonResult;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,11 +28,11 @@ public class IntegralRecordController {
      * @return
      */
     @GetMapping(value = "findAllByUserId")
-    JsonResult findAllByUserId(IntegralRecord integralRecord){
+    JsonResult findAllByUserId(IntegralRecord integralRecord, Integer currentPage, Integer pageSize){
         JsonResult result = new JsonResult();
-        List<IntegralRecord> integralRecordList = integralRecordService.findAllByUserId(integralRecord);
+        Page<IntegralRecord> integralRecordPage = integralRecordService.findAllByUserId(integralRecord, currentPage, pageSize);
         result.setCode("200");
-        result.setData(integralRecordList);
+        result.setData(integralRecordPage);
         return result;
     }
 

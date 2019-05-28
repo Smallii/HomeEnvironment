@@ -12,6 +12,7 @@ public class CargoType {
 
     @Id
     @Column(name = "cargo_type_id", nullable = false)
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     public long getCargoTypeId() {
         return cargoTypeId;
     }

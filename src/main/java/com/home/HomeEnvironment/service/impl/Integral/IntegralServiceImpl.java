@@ -31,7 +31,6 @@ public class IntegralServiceImpl implements IntegralService {
 
     @Override
     public void saveIntegral(Integral integral) {
-        integral.setIntegralId(SnowFlake.nextId());
         integralRepository.save(integral);
     }
 }

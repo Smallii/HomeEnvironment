@@ -16,6 +16,7 @@ public class ExchangeGoods {
 
     @Id
     @Column(name = "exchange_goods_id", nullable = false)
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     public long getExchangeGoodsId() {
         return exchangeGoodsId;
     }

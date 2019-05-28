@@ -27,7 +27,6 @@ public class CargoTypeServiceImpl implements CargoTypeService {
     public JsonResult save(CargoType cargoType) {
         JsonResult result = new JsonResult();
         try {
-            cargoType.setCargoTypeId(SnowFlake.nextId());
             cargoTypeRepository.save(cargoType);
             result.setCode("200");
             result.setMsg("货物类别添加成功！");

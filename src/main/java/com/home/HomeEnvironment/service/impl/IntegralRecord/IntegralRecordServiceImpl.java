@@ -11,10 +11,15 @@ import com.home.HomeEnvironment.service.Sysuser.SysUserService;
 import com.home.HomeEnvironment.util.JsonResult;
 import com.home.HomeEnvironment.util.SnowFlake;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -31,10 +36,13 @@ public class IntegralRecordServiceImpl implements IntegralRecordService {
     IntegralService integralService;
 
     @Override
-    public List<IntegralRecord> findAllByUserId(IntegralRecord integralRecord) {
+    public Page<IntegralRecord> findAllByUserId(IntegralRecord integralRecord, Integer currentPage, Integer pageSize) {
         SysUser sysUser = sysUserService.findByUsername(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
         integralRecord.setUserId(sysUser.getId());
-        return integralRecordRepository.findAllByUserId(integralRecord.getUserId());
+        Sort sort = new Sort(Sort.Direction.DESC, "integralRecordCreationTime", "integralRecordId");
+        Pageable pageable = PageRequest.of(currentPage, pageSize, sort);
+        Page<IntegralRecord> integralRecordPage = integralRecordRepository.findAllByUserId(integralRecord.getUserId(), pageable);
+        return integralRecordPage;
     }
 
     @Override
@@ -56,7 +64,6 @@ public class IntegralRecordServiceImpl implements IntegralRecordService {
             Integral integral = integralService.findByUserId(integralA);
             if (null == integral){
                 Integral integralB = new Integral();
-                integralB.setIntegralId(SnowFlake.nextId());
                 integralB.setUserId(sysUser.getId());
                 integralB.setIntegralConvertibility(0);
                 integralB.setIntegralTotal(0);
@@ -79,7 +86,7 @@ public class IntegralRecordServiceImpl implements IntegralRecordService {
                  * 添加积分记录
                  */
                 integralRecord.setUserId(sysUser.getId());
-                integralRecord.setIntegralRecordId(SnowFlake.nextId());
+                integralRecord.setIntegralRecordCreationTime(new Date());
                 integralRecordRepository.save(integralRecord);
                 result.setCode("200");
                 result.setMsg("积分已产生，已更改总积分");
@@ -91,8 +98,8 @@ public class IntegralRecordServiceImpl implements IntegralRecordService {
                     /**
                      * 添加积分记录
                      */
+                    integralRecord.setIntegralRecordCreationTime(new Date());
                     integralRecord.setUserId(sysUser.getId());
-                    integralRecord.setIntegralRecordId(SnowFlake.nextId());
                     integralRecordRepository.save(integralRecord);
                     result.setCode("200");
                     result.setMsg("积分已消费，已更改总积分");

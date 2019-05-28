@@ -2,6 +2,7 @@ package com.home.HomeEnvironment.service.IntegralRecord;
 
 import com.home.HomeEnvironment.entity.IntegralRecord;
 import com.home.HomeEnvironment.util.JsonResult;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -14,7 +15,7 @@ public interface IntegralRecordService {
      * 根据用户id查询积分记录表
      * @return
      */
-    List<IntegralRecord> findAllByUserId(IntegralRecord integralRecord);
+    Page<IntegralRecord> findAllByUserId(IntegralRecord integralRecord, Integer currentPage, Integer pageSize);
 
     /**
      *
